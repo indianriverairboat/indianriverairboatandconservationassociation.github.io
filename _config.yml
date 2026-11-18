@@ -1,0 +1,17 @@
+title: Indian River Airboat and Conservation Association
+url: https://indianriverairboatandconservationassociation.org
+timezone: America/New_York
+
+# Events and news are dated in the future or past; show them all and let the
+# page decide what is upcoming.
+future: true
+
+collections:
+  events:
+    output: false
+  news:
+    output: false
+
+exclude:
+  - README.md
+  - .github
