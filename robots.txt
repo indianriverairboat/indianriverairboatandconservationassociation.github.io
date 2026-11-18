@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://indianriverairboatandconservationassociation.org/sitemap.xml
