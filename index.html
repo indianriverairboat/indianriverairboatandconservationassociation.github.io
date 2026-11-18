@@ -1,3 +1,5 @@
+---
+---
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -130,15 +132,38 @@ footer{background:#0b2f39;color:#cfe0df;font-size:15px}
 footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
 footer p{margin:0}
 
-@media(max-width:820px){.cards,.contact .grid{grid-template-columns:minmax(0,1fr)}}
+/* editable content: events, flyers, news */
+.events h3.sub,.news h3.sub{font-size:28px;margin:28px 0 4px}
+.events li[hidden]{display:none}
+.events li.dated{grid-template-columns:minmax(0,200px) minmax(0,1fr) 120px}
+.when .time{display:block;font-family:"Source Sans 3",sans-serif;font-weight:600;font-size:16px;color:var(--soft)}
+.where{font-weight:600;color:var(--ink)!important}
+.desc p{margin:.4em 0 0}
+.flyer{display:block;width:120px;border:1px solid var(--line);border-radius:6px;overflow:hidden;align-self:start}
+.flyer img{display:block;width:100%;height:auto}
+.more{margin-top:.5em!important}.more a{font-weight:600;color:var(--coral)}
+.none{grid-template-columns:minmax(0,1fr)!important;color:var(--soft)}
+.btn.outline{border-color:currentColor;color:var(--ink)}
+.news{background:var(--teal2)}
+.posts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(16px,3vw,36px);margin-top:12px}
+.post{border-top:4px solid var(--coral);padding-top:14px}
+.post .date{font-size:14px;font-weight:600;color:var(--soft);margin:0 0 4px}
+.post img{display:block;width:100%;height:auto;max-height:340px;object-fit:contain;object-position:left top;margin:8px 0 10px;border-radius:6px}
+.post p{margin:0 0 .6em}
+
+@media(max-width:820px){.cards,.contact .grid,.posts{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:700px){.about,.two{grid-template-columns:minmax(0,1fr)}
-  .events li{grid-template-columns:minmax(0,1fr)}}
+  .events li,.events li.dated{grid-template-columns:minmax(0,1fr)}
+  .flyer{width:min(280px,100%)}}
 @media(max-width:600px){.nav ul{gap:0 14px}.nav ul a{font-size:15px}}
 </style>
 </head>
 <body>
+{% assign s = site.data.site %}
+{% assign today = site.time | date: "%Y%m%d" %}
+{% assign news = site.news | sort: "news_date" | reverse %}
 
-<div class="draft">Draft site: sample text below is a placeholder until the association's details are filled in.</div>
+{% if s.notice and s.notice != "" %}<div class="draft">{{ s.notice | escape }}</div>{% endif %}
 
 <section class="hero" aria-label="Welcome">
   <img class="photo" src="images/airboat-hero.jpg" width="1080" height="720" alt="An airboat throwing a wide spray as it turns across open marsh water under a cloudy blue sky">
@@ -147,6 +172,7 @@ footer p{margin:0}
     <nav class="nav" aria-label="Main">
       <a class="brand" href="#top"><img src="images/logo-badge.png" width="56" height="56" alt=""><span>Indian River Airboat &amp; Conservation Association</span></a>
       <ul>
+        {% if news.size > 0 %}<li><a href="#news">News</a></li>{% endif %}
         <li><a href="#about">About</a></li><li><a href="#what">What we do</a></li>
         <li><a href="#events">Events</a></li><li><a href="#join">Join</a></li>
         <li><a href="#contact">Contact</a></li>
@@ -157,29 +183,45 @@ footer p{margin:0}
   <div class="copy" id="top">
     <div class="inner">
       <img class="seal" src="images/logo-badge.png" width="132" height="132" alt="Indian River Airboat and Conservation Association, Inc. seal">
-      <h1>Preserve our wetlands.</h1>
-      <p>We're a not-for-profit association of airboaters and neighbors working for safe, responsible airboating and healthy marshes and waterways in Indian River County.</p>
+      <h1>{{ s.hero_headline | escape }}</h1>
+      <p>{{ s.hero_text | escape }}</p>
       <div class="btns">
         <a class="btn primary" href="#join">Become a member</a>
         <a class="btn ghost" href="#events">See upcoming events</a>
       </div>
     </div>
   </div>
-  <p class="credit">Photo: Southern Edge Photography</p>
+  {% if s.photo_credit and s.photo_credit != "" %}<p class="credit">{{ s.photo_credit | escape }}</p>{% endif %}
 </section>
+
+{% if news.size > 0 %}
+<section class="band news" id="news">
+  <div class="wrap">
+    <h2>News</h2>
+    <div class="posts">
+      {% for n in news limit: 3 %}
+      <article class="post">
+        <p class="date">{{ n.news_date | date: "%B %-d, %Y" }}</p>
+        <h3>{{ n.title | escape }}</h3>
+        {% if n.image and n.image != "" %}<a href="{{ n.image | relative_url }}" target="_blank" rel="noopener"><img src="{{ n.image | relative_url }}" alt="Flyer or photo for {{ n.title | escape }}" loading="lazy"></a>{% endif %}
+        {{ n.content | markdownify }}
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
 
 <section class="band" id="about">
   <div class="wrap about">
     <div>
       <h2>Who we are</h2>
-      <p>The Indian River Airboat and Conservation Association brings together people who love Florida's wetlands. Many of us grew up on these waters, and we want our kids and grandkids to enjoy them the same way.</p>
-      <p>We work with landowners, agencies and other user groups to keep the marshes open, clean and safe. We also teach good airboating practices to new riders.</p>
+      {{ s.about_text | markdownify }}
     </div>
     <div class="facts">
       <dl>
-        <div><dt>Founded</dt><dd>Year to be added</dd></div>
-        <div><dt>Status</dt><dd>Florida not-for-profit corporation (Indian River Airboat and Conservation Association, Inc.)</dd></div>
-        <div><dt>Membership</dt><dd>Open to airboat owners, riders and anyone who supports the marshes</dd></div>
+        {% for f in s.facts %}<div><dt>{{ f.label | escape }}</dt><dd>{{ f.value | escape }}</dd></div>
+        {% endfor %}
       </dl>
     </div>
   </div>
@@ -189,21 +231,13 @@ footer p{margin:0}
   <div class="wrap">
     <h2>What we do</h2>
     <div class="cards">
+      {% for c in s.what_we_do limit: 3 %}
       <div class="card">
-        <svg viewBox="0 0 44 44" fill="none" stroke="#c9a227" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M8 38 C10 24 14 14 22 6 C20 18 22 28 30 38"/><path d="M22 38 C24 28 30 22 38 18"/><path d="M4 38h36"/></svg>
-        <h3>Conservation</h3>
-        <p>Marsh cleanups, trash pickups at ramps, and support for projects that keep water levels and habitat healthy.</p>
+        {% case forloop.index %}{% when 1 %}<svg viewBox="0 0 44 44" fill="none" stroke="#c9a227" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M8 38 C10 24 14 14 22 6 C20 18 22 28 30 38"/><path d="M22 38 C24 28 30 22 38 18"/><path d="M4 38h36"/></svg>{% when 2 %}<svg viewBox="0 0 44 44" fill="none" stroke="#c9a227" stroke-width="2.5" stroke-linejoin="round" aria-hidden="true"><path d="M22 4 L38 10 V22 C38 31 31 37 22 40 C13 37 6 31 6 22 V10Z"/><path d="M15 22l5 5 9-10"/></svg>{% else %}<svg viewBox="0 0 44 44" fill="none" stroke="#c9a227" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="15" cy="15" r="6"/><circle cx="30" cy="17" r="5"/><path d="M4 38c1-8 6-12 11-12s10 4 11 12M24 38c1-6 4-10 7-10s7 3 9 10"/></svg>{% endcase %}
+        <h3>{{ c.title | escape }}</h3>
+        <p>{{ c.text | escape }}</p>
       </div>
-      <div class="card">
-        <svg viewBox="0 0 44 44" fill="none" stroke="#c9a227" stroke-width="2.5" stroke-linejoin="round" aria-hidden="true"><path d="M22 4 L38 10 V22 C38 31 31 37 22 40 C13 37 6 31 6 22 V10Z"/><path d="M15 22l5 5 9-10"/></svg>
-        <h3>Safety and education</h3>
-        <p>Rider safety, boating etiquette, noise courtesy near homes, and respect for wildlife and other people on the water.</p>
-      </div>
-      <div class="card">
-        <svg viewBox="0 0 44 44" fill="none" stroke="#c9a227" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="15" cy="15" r="6"/><circle cx="30" cy="17" r="5"/><path d="M4 38c1-8 6-12 11-12s10 4 11 12M24 38c1-6 4-10 7-10s7 3 9 10"/></svg>
-        <h3>Community and access</h3>
-        <p>Rides, cookouts and meetings for members, and a unified voice on rules that affect access to the marsh.</p>
-      </div>
+      {% endfor %}
     </div>
   </div>
 </section>
@@ -211,13 +245,33 @@ footer p{margin:0}
 <section class="band events" id="events">
   <div class="wrap">
     <h2>Meetings and events</h2>
-    <ol>
-      <li><span class="when">Monthly</span><div><h3>Membership meeting</h3><p>Day, time and location to be announced.</p></div></li>
-      <li><span class="when">Seasonal</span><div><h3>Marsh cleanup day</h3><p>Bring gloves and a boat if you have one. Date to be announced.</p></div></li>
-      <li><span class="when">Annual</span><div><h3>Members' ride and cookout</h3><p>Details to be announced.</p></div></li>
+    <h3 class="sub">Upcoming</h3>
+    {% assign events = site.events | sort: "event_date" %}
+    {% assign upcoming = 0 %}
+    <ol id="upcoming">
+      {% for e in events %}{% assign d = e.event_date | date: "%Y%m%d" %}{% if d >= today %}{% assign upcoming = upcoming | plus: 1 %}
+      <li class="dated" data-date="{{ d }}">
+        <span class="when">{{ e.event_date | date: "%a, %b %-d" }}{% if e.time and e.time != "" %}<span class="time">{{ e.time | escape }}</span>{% endif %}</span>
+        <div>
+          <h3>{{ e.title | escape }}</h3>
+          {% if e.location and e.location != "" %}<p class="where">{{ e.location | escape }}</p>{% endif %}
+          <div class="desc">{{ e.content | markdownify }}</div>
+          {% if e.facebook_link and e.facebook_link != "" %}<p class="more"><a href="{{ e.facebook_link | escape }}" target="_blank" rel="noopener">Event on Facebook</a></p>{% endif %}
+        </div>
+        {% if e.flyer and e.flyer != "" %}<a class="flyer" href="{{ e.flyer | relative_url }}" target="_blank" rel="noopener"><img src="{{ e.flyer | relative_url }}" alt="Flyer for {{ e.title | escape }}" loading="lazy"></a>{% endif %}
+      </li>{% endif %}{% endfor %}
+      <li class="none"{% if upcoming > 0 %} hidden{% endif %}><p>No events are scheduled right now. Check back soon, or see our Facebook group.</p></li>
     </ol>
-    <p style="margin:18px 0 0;color:var(--soft)">We post dates, times and locations in our Facebook group.</p>
-    <div class="btns" style="margin-top:12px"><a class="btn dark" href="https://www.facebook.com/groups/292532400799221/events" rel="noopener" target="_blank">See upcoming events on Facebook</a></div>
+
+    {% if s.regular_events.size > 0 %}
+    <h3 class="sub">Regular meetings and activities</h3>
+    <ol>
+      {% for r in s.regular_events %}<li><span class="when">{{ r.when | escape }}</span><div><h3>{{ r.title | escape }}</h3>{% if r.details and r.details != "" %}<p>{{ r.details | escape }}</p>{% endif %}</div></li>
+      {% endfor %}
+    </ol>
+    {% endif %}
+    <p style="margin:18px 0 0;color:var(--soft)">Members also share events and photos in our Facebook group.</p>
+    <div class="btns" style="margin-top:12px"><a class="btn outline" href="{{ s.facebook_url | escape }}events" rel="noopener" target="_blank">Facebook group events</a></div>
   </div>
 </section>
 
@@ -226,15 +280,14 @@ footer p{margin:0}
     <div>
       <h2>Become a member</h2>
       <ol class="steps">
-        <li>Come to a monthly meeting and meet the group.</li>
-        <li>Fill out a membership form at the meeting or by email.</li>
-        <li>Pay annual dues. The amount will be listed here.</li>
+        {% for step in s.join_steps %}<li>{{ step | escape }}</li>
+        {% endfor %}
       </ol>
       <a class="btn dark" href="#contact">Ask about membership</a>
     </div>
     <div id="donate">
       <h2>Support our work</h2>
-      <p>Donations pay for cleanup supplies, safety materials and events. To give, contact us and we'll tell you how. You can also mail a check to the association's mailing address below.</p>
+      <p>{{ s.donate_text | escape }}</p>
       <a class="btn primary" href="#contact">Make a donation</a>
     </div>
   </div>
@@ -244,19 +297,27 @@ footer p{margin:0}
   <div class="wrap">
     <h2>Contact us</h2>
     <div class="grid">
-      <div><strong>Email</strong><p>Address coming soon</p></div>
-      <div><strong>Mailing address</strong><p>To be added</p></div>
-      <div><strong>Social media</strong><p><a href="https://www.facebook.com/groups/292532400799221/" rel="noopener" target="_blank">Join our Facebook group</a></p></div>
+      <div><strong>Email</strong><p>{% if s.contact_email and s.contact_email != "" %}<a href="mailto:{{ s.contact_email | escape }}">{{ s.contact_email | escape }}</a>{% else %}Address coming soon{% endif %}</p></div>
+      <div><strong>Mailing address</strong><p>{% if s.mailing_address and s.mailing_address != "" %}{{ s.mailing_address | escape | newline_to_br }}{% else %}To be added{% endif %}</p></div>
+      <div><strong>Social media</strong><p><a href="{{ s.facebook_url | escape }}" rel="noopener" target="_blank">Join our Facebook group</a></p></div>
     </div>
   </div>
 </section>
 
 <footer class="band" style="padding-block:28px">
   <div class="wrap">
-    <p>&copy; 2026 Indian River Airboat and Conservation Association, Inc.</p>
-    <p>A Florida not-for-profit organization &middot; <a href="https://www.facebook.com/groups/292532400799221/" rel="noopener" target="_blank">Facebook</a></p>
+    <p>&copy; {{ site.time | date: "%Y" }} Indian River Airboat and Conservation Association, Inc.</p>
+    <p>A Florida not-for-profit organization &middot; <a href="{{ s.facebook_url | escape }}" rel="noopener" target="_blank">Facebook</a></p>
   </div>
 </footer>
 
+<script>
+(function(){
+  var d=new Date(),t=String(d.getFullYear())+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0");
+  var items=document.querySelectorAll("#upcoming li[data-date]"),left=0;
+  items.forEach(function(li){if(li.getAttribute("data-date")<t){li.hidden=true}else{left++}});
+  if(left===0){var n=document.querySelector("#upcoming .none");if(n)n.hidden=false}
+})();
+</script>
 </body>
 </html>

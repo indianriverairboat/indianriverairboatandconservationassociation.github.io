@@ -1,0 +1,194 @@
+media:
+  input: images/uploads
+  output: /images/uploads
+  rename: safe
+  extensions: [jpg, jpeg, png, webp]
+
+settings:
+  commit:
+    identity: user
+
+content:
+  - name: events
+    label: Events
+    type: collection
+    path: _events
+    exclude: [".gitkeep"]
+    filename: "{year}-{month}-{day}-{primary}.md"
+    view:
+      fields: [title, event_date, location]
+      primary: title
+      sort: event_date
+      order: desc
+    fields:
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: event_date
+        label: Date
+        type: date
+        required: true
+        default: ""
+        options:
+          format: yyyy-MM-dd
+        description: Events disappear from the website by themselves after this date.
+      - name: time
+        label: Time
+        type: string
+        description: For example "8:00 AM" or "6:30 to 8:00 PM". Leave blank if not set yet.
+      - name: location
+        label: Location
+        type: string
+      - name: flyer
+        label: Flyer
+        type: image
+        options:
+          extensions: [jpg, jpeg, png, webp]
+        description: JPG or PNG. Please keep it under 2 MB. Put the date, time and place in the fields above too, so everyone can read them.
+      - name: facebook_link
+        label: Facebook event link
+        type: string
+        description: Optional. Paste the link to the Facebook event if there is one.
+      - name: body
+        label: Description
+        type: rich-text
+        options:
+          format: markdown
+          media: false
+
+  - name: news
+    label: News
+    type: collection
+    path: _news
+    exclude: [".gitkeep"]
+    filename: "{year}-{month}-{day}-{primary}.md"
+    view:
+      fields: [title, news_date]
+      primary: title
+      sort: news_date
+      order: desc
+    fields:
+      - name: title
+        label: Headline
+        type: string
+        required: true
+      - name: news_date
+        label: Date
+        type: date
+        required: true
+        options:
+          format: yyyy-MM-dd
+        description: The website shows the newest three posts.
+      - name: image
+        label: Flyer or photo
+        type: image
+        options:
+          extensions: [jpg, jpeg, png, webp]
+        description: Optional. JPG or PNG, please keep it under 2 MB.
+      - name: body
+        label: Story
+        type: rich-text
+        options:
+          format: markdown
+          media: false
+
+  - name: site
+    label: Site text
+    type: file
+    path: _data/site.yml
+    format: yaml
+    fields:
+      - name: notice
+        label: Notice banner
+        type: string
+        description: A thin banner across the top of the site. Leave blank to hide it.
+      - name: hero_headline
+        label: Homepage headline
+        type: string
+        required: true
+      - name: hero_text
+        label: Homepage intro
+        type: text
+        required: true
+      - name: photo_credit
+        label: Photo credit
+        type: string
+      - name: about_text
+        label: Who we are
+        type: rich-text
+        options:
+          format: markdown
+          media: false
+      - name: facts
+        label: Quick facts (beside "Who we are")
+        type: object
+        list:
+          max: 6
+          collapsible:
+            collapsed: true
+            summary: "{label}"
+        fields:
+          - name: label
+            label: Label
+            type: string
+            required: true
+          - name: value
+            label: Value
+            type: string
+            required: true
+      - name: what_we_do
+        label: What we do (three cards)
+        type: object
+        list:
+          min: 3
+          max: 3
+          collapsible:
+            collapsed: true
+            summary: "{title}"
+        fields:
+          - name: title
+            label: Title
+            type: string
+            required: true
+          - name: text
+            label: Text
+            type: text
+            required: true
+      - name: regular_events
+        label: Regular meetings and activities
+        description: Things that happen on a schedule. Dated events go under Events instead.
+        type: object
+        list:
+          max: 8
+          collapsible:
+            collapsed: true
+            summary: "{title}"
+        fields:
+          - name: when
+            label: How often
+            type: string
+            required: true
+          - name: title
+            label: Title
+            type: string
+            required: true
+          - name: details
+            label: Details
+            type: text
+      - name: join_steps
+        label: How to join (steps)
+        type: string
+        list: true
+      - name: donate_text
+        label: Support our work
+        type: text
+      - name: contact_email
+        label: Contact email
+        type: string
+      - name: mailing_address
+        label: Mailing address
+        type: text
+      - name: facebook_url
+        label: Facebook group link
+        type: string

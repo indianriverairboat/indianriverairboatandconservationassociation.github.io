@@ -1,0 +1,40 @@
+notice: "Draft site: sample text below is a placeholder until the association's details are filled in."
+hero_headline: Preserve our wetlands.
+hero_text: We're a not-for-profit association of airboaters and neighbors working for safe, responsible airboating and healthy marshes and waterways in Indian River County.
+photo_credit: "Photo: Southern Edge Photography"
+about_text: |-
+  The Indian River Airboat and Conservation Association brings together people who love Florida's wetlands. Many of us grew up on these waters, and we want our kids and grandkids to enjoy them the same way.
+
+  We work with landowners, agencies and other user groups to keep the marshes open, clean and safe. We also teach good airboating practices to new riders.
+facts:
+  - label: Founded
+    value: Year to be added
+  - label: Status
+    value: Florida not-for-profit corporation (Indian River Airboat and Conservation Association, Inc.)
+  - label: Membership
+    value: Open to airboat owners, riders and anyone who supports the marshes
+what_we_do:
+  - title: Conservation
+    text: Marsh cleanups, trash pickups at ramps, and support for projects that keep water levels and habitat healthy.
+  - title: Safety and education
+    text: Rider safety, boating etiquette, noise courtesy near homes, and respect for wildlife and other people on the water.
+  - title: Community and access
+    text: Rides, cookouts and meetings for members, and a unified voice on rules that affect access to the marsh.
+regular_events:
+  - when: Monthly
+    title: Membership meeting
+    details: Day, time and location to be announced.
+  - when: Seasonal
+    title: Marsh cleanup day
+    details: Bring gloves and a boat if you have one. Date to be announced.
+  - when: Annual
+    title: Members' ride and cookout
+    details: Details to be announced.
+join_steps:
+  - Come to a monthly meeting and meet the group.
+  - Fill out a membership form at the meeting or by email.
+  - Pay annual dues. The amount will be listed here.
+donate_text: Donations pay for cleanup supplies, safety materials and events. To give, contact us and we'll tell you how. You can also mail a check to the association's mailing address below.
+contact_email: ""
+mailing_address: ""
+facebook_url: https://www.facebook.com/groups/292532400799221/
